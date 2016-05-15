@@ -29,10 +29,9 @@ se = file("/dev/null", 'a+', 0)
 while True:
 	fs = open('test.txt');
 	prog = 0
+	index = 1
 	def callback(a,b,c):
 		global prog
-		global index 
-		index = 1
 		progress = 100.0*a*b/c
 		if progress-prog >= 1:
 			per = '%.2f' %progress
@@ -42,6 +41,7 @@ while True:
 
 	for m in fs.readlines():
 		print(m)
+		global index
 		name = '%d' %index;
 		urllib.urlretrieve(m,name+'.mp4',callback)
 		index = index+1
