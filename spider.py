@@ -28,10 +28,11 @@ se = file("/dev/null", 'a+', 0)
 
 while True:
 	fs = open('test.txt');
-	index = 1; 
 	prog = 0
 	def callback(a,b,c):
 		global prog
+		global index 
+		index = 1
 		progress = 100.0*a*b/c
 		if progress-prog >= 1:
 			per = '%.2f' %progress
