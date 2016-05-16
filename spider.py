@@ -22,14 +22,13 @@ sys.stderr.flush()
 si = file("/dev/null", 'r')
 so = file("/dev/null", 'a+')
 se = file("/dev/null", 'a+', 0)
-# os.dup2(si.fileno(), sys.stdin.fileno())
-# os.dup2(so.fileno(), sys.stdout.fileno())
-# os.dup2(se.fileno(), sys.stderr.fileno())
+os.dup2(si.fileno(), sys.stdin.fileno())
+os.dup2(so.fileno(), sys.stdout.fileno())
+os.dup2(se.fileno(), sys.stderr.fileno())
 
 while True:
 	fs = open('test.txt');
 	prog = 0
-	index = 1
 	def callback(a,b,c):
 		global prog
 		progress = 100.0*a*b/c
@@ -38,10 +37,9 @@ while True:
 			mesg = "alreay download:"+per+'%';
 			prog = progress;
 			print(mesg)
-
+	global index
+	index = 1
 	for m in fs.readlines():
-		print(m)
-		global index
 		name = '%d' %index;
 		urllib.urlretrieve(m,name+'.mp4',callback)
 		index = index+1
