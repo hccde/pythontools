@@ -4,7 +4,7 @@ import os, sys
 
 pid = os.fork()
 if pid > 0:
-    sys.exit(0)
+    sys.exit(0);
  
 
 os.chdir("/Users/admos/Downloads/testdown")
