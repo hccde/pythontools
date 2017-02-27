@@ -1,18 +1,20 @@
 {
 	"url":"http://www.pss-system.gov.cn/sipopublicsearch/patentsearch/showSearchResult-startWa.shtml",
-	"params":"resultPagination.limit:12
-			resultPagination.sumLimit:10
-			resultPagination.start:12
-			resultPagination.totalCount:379649
-			searchCondition.searchType:Sino_foreign
-			search_scope:
-			searchCondition.dbId:
-			searchCondition.searchExp:江苏
-			wee.bizlog.modulelevel:0200101
-			searchCondition.executableSearchExp:VDB:(IBI='江苏')
-			searchCondition.literatureSF:
-			searchCondition.strategy:
-			searchCondition.searchKeywords:
-			searchCondition.searchKeywords:[江][ ]{0,}[苏][ ]{0,}"
+	"params":{
+			"resultPagination.limit":12,
+			"resultPagination.sumLimit":10,
+			"resultPagination.start":12,
+			"resultPagination.totalCount":379649,
+			"searchCondition.searchType":"Sino_foreign",
+			"search_scope":"",
+			"searchCondition.dbId":"",
+			"searchCondition.searchExp":"江苏",
+			"wee.bizlog.modulelevel":"0200101:",
+			"searchCondition.executableSearchExp":"VDB:(IBI='江苏')",
+			"searchCondition.literatureSF":"",
+			"searchCondition.strategy":"",
+			"searchCondition.searchKeywords":"",
+			"searchCondition.searchKeywords":"[江][ ]{0,}[苏][ ]{0,}"
+		}
 
 }
