@@ -2,24 +2,29 @@ import aiohttp
 import asyncio
 import async_timeout
 import json
+import copy 
 from pyquery import PyQuery as pq
 
 def get_configure(file_path):
 	with open(file_path, 'r') as f:
 		data = json.load(f)
 		return data
+def write_file(string):
+    fs = open('data', 'w')
+    fs.write(string)
+    fs.close()
 
-async def fetch(session, url):
-    with async_timeout.timeout(10):
-        async with session.get(url) as response:
+async def fetch(session, url,params):
+    with async_timeout.timeout(100):
+        async with session.post(url,data=params) as response:
             return await response.text()
 
 async def request(loop,params):
     async with aiohttp.ClientSession(loop=loop) as session:
-        html = await fetch(session, 'http://www.bing.com')
-        print(params)
+        html = await fetch(session,configure['url'],params)
         #when return ,check queue,construct param,
-        # print(html)
+        write_file(html)
+        print(html)
 
 # async with aiohttp.ClientSession() as session:
 #     async with session.get('https://api.github.com/events') as resp:
@@ -27,14 +32,16 @@ async def request(loop,params):
 #         print(await resp.text())
 configure = get_configure('./configure.json')
 
-def main(config):
+def tasks_group(config):
     maxRequest = configure['maxRequest']
     tasks = []
     for index in range(0,maxRequest):
         print('request url')
         loop = asyncio.get_event_loop()
-        tasks.append(loop.create_task(request(loop,index)))
-        # loop.run_until_complete(request(loop,index))
+        params = copy.deepcopy(configure['params'])
+        tasks.append(loop.create_task(request(loop,params)))
+        configure['params']['resultPagination.start']+=configure['params']['resultPagination.limit'];        
     loop.run_until_complete(asyncio.wait(tasks));
+    # configure['current'] +=configure.current+maxRequest;
 
-main(configure)
+tasks_group(configure)
