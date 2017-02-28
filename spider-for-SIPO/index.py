@@ -14,6 +14,17 @@ def write_file(string):
     fs.write(string)
     fs.close()
 
+def get_file(path):
+    fs = open(path,'r')
+    return fs.read()
+def get_info(str):
+    q = pq(str)
+    length = len(q('.item-content-body'))
+    string = '';
+    for index in range(0,length) :
+        string+=q('.item-content-body').eq(index).text()+'\n\n'
+    print(string)
+
 async def fetch(session, url,params):
     with async_timeout.timeout(100):
         async with session.post(url,data=params) as response:
@@ -44,4 +55,5 @@ def tasks_group(config):
     loop.run_until_complete(asyncio.wait(tasks));
     # configure['current'] +=configure.current+maxRequest;
 
-tasks_group(configure)
+# tasks_group(configure)
+get_info(get_file('data'))
