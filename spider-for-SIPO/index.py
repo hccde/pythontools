@@ -14,15 +14,27 @@ async def fetch(session, url):
         async with session.get(url) as response:
             return await response.text()
 
-async def main(loop):
+async def request(loop,params):
     async with aiohttp.ClientSession(loop=loop) as session:
-        html = await fetch(session, 'http://python.org')
-        print(html)
+        html = await fetch(session, 'http://www.bing.com')
+        print(params)
+        #when return ,check queue,construct param,
+        # print(html)
 
 # async with aiohttp.ClientSession() as session:
 #     async with session.get('https://api.github.com/events') as resp:
 #         print(resp.status)
 #         print(await resp.text())
-get_configure('./configure.json')
-loop = asyncio.get_event_loop()
-loop.run_until_complete(main(loop))
+configure = get_configure('./configure.json')
+
+def main(config):
+    maxRequest = configure['maxRequest']
+    tasks = []
+    for index in range(0,maxRequest):
+        print('request url')
+        loop = asyncio.get_event_loop()
+        tasks.append(loop.create_task(request(loop,index)))
+        # loop.run_until_complete(request(loop,index))
+    loop.run_until_complete(asyncio.wait(tasks));
+
+main(configure)

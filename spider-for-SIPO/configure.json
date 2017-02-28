@@ -17,6 +17,6 @@
 			"searchCondition.searchKeywords":"[江][ ]{0,}[苏][ ]{0,}"
 		},
 		"method":"post",
-		"maxRequest":"10"
+		"maxRequest":10
 
 }
