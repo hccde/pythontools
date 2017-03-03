@@ -7,6 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 from pyquery import PyQuery as pq
 
+
 def get_configure(file_path):
 	with open(file_path, 'r') as f:
 		data = json.load(f)
@@ -31,26 +32,32 @@ def get_info(str):
         string+=q('.item-content-body').eq(index).text()+'\n\n'
     write_file(string)
     print(string)
+keyinfo = get_configure('keyinfo.json')
 
 def get_proxy():
-    proxys = BeautifulSoup(requests.get("http://qsrdk.daili666api.com/ip/?tid=557761112430648&num=1").text).p.contents[0]
-    print proxys
+    proxys = BeautifulSoup(requests.get("http://qsrdk.daili666api.com/ip/?tid="+keyinfo["tid"]+"&num=1","lxml").text).p.contents[0]
+    print(proxys)
     return proxys.strip();
 
+proxy = get_proxy();
 
 async def fetch(session, url,params):
-    with async_timeout.timeout(20):
-        async with session.post(url,data=params) as response:
+    global proxy
+    with async_timeout.timeout(300):
+        async with session.post(url,data=params,proxy='http://'+proxy) as response:
             text = await response.text()
             if len(text)<300:
                 proxy = get_proxy()
+                print('get proxy')
                 configure['params']['resultPagination.start']-=configure['params']['resultPagination.limit']
             else:
                 return text
+            proxy = get_proxy()
+            print('change proxy')
             return '';
 
 async def request(loop,params):
-    async with aiohttp.ClientSession(loop=loop,proxy='http://'+proxy) as session:
+    async with aiohttp.ClientSession(loop=loop) as session:
         html = await fetch(session,configure['url'],params)
         #when return ,check queue,construct param,
         get_info(html)
@@ -77,5 +84,4 @@ def main():
         tasks_group(configure)
     print('this city ok')
 
-proxy = get_proxy();
 main();
