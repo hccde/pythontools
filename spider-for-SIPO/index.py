@@ -10,13 +10,13 @@ from pyquery import PyQuery as pq
 
 def get_configure(file_path):
 	with open(file_path, 'r') as f:
-		data = json.load(f)
+		data = eval(f.read())
 		return data
 def write_file(string):
     fs = open('dest', 'a')
-    log = open('configure.json','w')
+    log = open('configure','w')
     fs.write(string)
-    log.write(json.dumps(configure))
+    log.write(str(configure))
     log.close();
     fs.close()
 
@@ -41,29 +41,41 @@ def get_proxy():
 
 proxy = get_proxy();
 
-async def fetch(session, url,params):
+async def fetch(session, url,params,loop):
     global proxy
     with async_timeout.timeout(300):
-        async with session.post(url,data=params,proxy='http://'+proxy) as response:
-            text = await response.text()
+        try:
+            async with session.post(url,data=str(params),proxy='http://'+proxy,headers = configure['headers']) as response:
+                text = await response.text()
+        except:
+            print(1)
+            loop.run_until_complete(loop.shutdown_asyncgens())
+            loop.close()
+            proxy = get_proxy()
+            print('change proxy')
+            configure['params']['resultPagination.start']-=configure['params']['resultPagination.limit']
+            return '';
+        else:
+            print(2)
+            print(text)
             if len(text)<300:
                 proxy = get_proxy()
                 print('get proxy')
+                loop.run_until_complete(loop.shutdown_asyncgens())
+                loop.close()
                 configure['params']['resultPagination.start']-=configure['params']['resultPagination.limit']
+                return '';
             else:
                 return text
-            proxy = get_proxy()
-            print('change proxy')
-            return '';
 
 async def request(loop,params):
     async with aiohttp.ClientSession(loop=loop) as session:
-        html = await fetch(session,configure['url'],params)
+        html = await fetch(session,configure['url'],params,loop)
         #when return ,check queue,construct param,
         get_info(html)
 
 
-configure = get_configure('./configure.json')
+configure = get_configure('./configure')
 
 def tasks_group(config):
     maxRequest = configure['maxRequest']
