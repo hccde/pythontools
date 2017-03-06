@@ -9,9 +9,11 @@ from pyquery import PyQuery as pq
 
 
 def get_configure(file_path):
-	with open(file_path, 'r') as f:
-		data = eval(f.read())
-		return data
+    with open(file_path, 'r') as f:
+        # data = json.load(f)
+        data = eval(f.read())
+        return data
+
 def write_file(string):
     fs = open('dest', 'a')
     log = open('configure','w')
@@ -39,29 +41,29 @@ def get_proxy():
     print(proxys)
     return proxys.strip();
 
-proxy = get_proxy();
+# proxy = get_proxy();
+proxy = 1
 
 async def fetch(session, url,params,loop):
     global proxy
-    with async_timeout.timeout(300):
+    with async_timeout.timeout(50):
         try:
-            async with session.post(url,data=str(params),proxy='http://'+proxy,headers = configure['headers']) as response:
+            async with session.post(url,data=params) as response:
                 text = await response.text()
         except:
             print(1)
-            loop.run_until_complete(loop.shutdown_asyncgens())
+            loop.stop()
             loop.close()
-            proxy = get_proxy()
+            # proxy = get_proxy()
             print('change proxy')
             configure['params']['resultPagination.start']-=configure['params']['resultPagination.limit']
             return '';
         else:
             print(2)
-            print(text)
             if len(text)<300:
-                proxy = get_proxy()
+                # proxy = get_proxy()
                 print('get proxy')
-                loop.run_until_complete(loop.shutdown_asyncgens())
+                loop.stop()
                 loop.close()
                 configure['params']['resultPagination.start']-=configure['params']['resultPagination.limit']
                 return '';
@@ -75,7 +77,7 @@ async def request(loop,params):
         get_info(html)
 
 
-configure = get_configure('./configure')
+configure = get_configure('configure')
 
 def tasks_group(config):
     maxRequest = configure['maxRequest']
@@ -92,8 +94,8 @@ def tasks_group(config):
 def main():
     end = configure['params']['resultPagination.totalCount']
     start = configure['params']['resultPagination.start']
-    while end >= start:
-        tasks_group(configure)
-    print('this city ok')
+    # while end >= start:
+    tasks_group(configure)
+    # print('this city ok')
 
 main();
