@@ -26,14 +26,20 @@ def write_file(string):
 def get_file(path):
     fs = open(path,'r')
     return fs.read()
-def get_info(str):
-    q = pq(str)
-    length = len(q('.item-content-body'))
-    string = '';
-    for index in range(0,length) :
-        string+=q('.item-content-body').eq(index).text()+'\n\n'
+def get_info(html_str):
+    try:
+        q = pq(html_str)
+        length = len(q('.item-content-body'))
+        string = '';
+        for index in range(0,length) :
+            string+=q('.item-content-body').eq(index).text()+'\n\n'
+    except:
+        print(html_str)
+        print('parse html error');
+        string = ''
     write_file(string)
     print(string)
+
 keyinfo = get_configure('keyinfo.json')
 
 def get_proxy():
@@ -41,31 +47,35 @@ def get_proxy():
     print(proxys)
     return proxys.strip();
 
-# proxy = get_proxy();
-proxy = 1
+proxy = get_proxy()
+dirty = False
+def changeProxy():
+    if dirty:
+        return
+    global proxy
+    proxy = get_proxy()
+    configure['params']['resultPagination.start']-=configure['params']['resultPagination.limit']
+    print('change proxy')
 
 async def fetch(session, url,params,loop):
     global proxy
+    global dirty
     with async_timeout.timeout(50):
         try:
-            async with session.post(url,data=params) as response:
+            async with session.post(url,data=params,proxy='http://'+proxy) as response:
                 text = await response.text()
         except:
             print(1)
-            loop.stop()
-            loop.close()
-            # proxy = get_proxy()
-            print('change proxy')
-            configure['params']['resultPagination.start']-=configure['params']['resultPagination.limit']
+            dirty = True
+            changeProxy()
+            # configure['params']['resultPagination.start']-=configure['params']['resultPagination.limit']
             return '';
         else:
             print(2)
-            if len(text)<300:
-                # proxy = get_proxy()
-                print('get proxy')
-                loop.stop()
-                loop.close()
-                configure['params']['resultPagination.start']-=configure['params']['resultPagination.limit']
+            print(text)
+            if len(text)<1000:
+                dirty = True
+                changeProxy()
                 return '';
             else:
                 return text
@@ -79,23 +89,35 @@ async def request(loop,params):
 
 configure = get_configure('configure')
 
-def tasks_group(config):
-    maxRequest = configure['maxRequest']
-    tasks = []
-    for index in range(0,maxRequest):
-        loop = asyncio.get_event_loop()
-        params = copy.deepcopy(configure['params'])
-        tasks.append(loop.create_task(request(loop,params)))
-        configure['params']['resultPagination.start']+=configure['params']['resultPagination.limit'];        
-    loop.run_until_complete(asyncio.wait(tasks));
+# def tasks_group(config):
+#     maxRequest = configure['maxRequest']
+#     tasks = []
+#     for index in range(0,maxRequest):
+#         loop = asyncio.get_event_loop()
+#         params = copy.deepcopy(configure['params'])
+#         tasks.append(loop.create_task(request(loop,params)))
+#         configure['params']['resultPagination.start']+=configure['params']['resultPagination.limit'];        
+#     loop.run_until_complete(asyncio.wait(tasks));
 
 # tasks_group(configure)
 # get_info(get_file('data'))
-def main():
+async def main(loop):
+    global dirty
     end = configure['params']['resultPagination.totalCount']
     start = configure['params']['resultPagination.start']
-    # while end >= start:
-    tasks_group(configure)
+    while end >= start:
+        maxRequest = configure['maxRequest']
+        tasks = []
+        dirty = False
+        loop = asyncio.get_event_loop()
+        for index in range(0,maxRequest):
+            params = copy.deepcopy(configure['params'])
+            tasks.append(loop.create_task(request(loop,params)))
+            configure['params']['resultPagination.start']+=configure['params']['resultPagination.limit'];        
+        # loop.run_until_complete(asyncio.wait(tasks));
+        await asyncio.wait(tasks)
+    # tasks_group(configure)
     # print('this city ok')
-
-main();
+loop = asyncio.get_event_loop()
+maintask = asyncio.ensure_future(main(loop))
+loop.run_until_complete(maintask);
