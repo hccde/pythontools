@@ -29,9 +29,9 @@ function req() {
 			url: "http://www.pss-system.gov.cn/sipopublicsearch/patentsearch/showSearchResult-startWa.shtml",
 			form: formData,
 			gzip: true,
-			// headers:req_info.headers,
+			headers:req_info.headers,
 			// proxy:proxy&&('http://'+proxy)
-			// proxy:'http://127.0.0.1:8888'
+			proxy:'http://218.66.253.146:8800'
 		},
 		function optionalCallback(err, httpResponse, body) {
 			if (err) {
@@ -41,8 +41,8 @@ function req() {
 			console.log(body)
 			// console.log(httpResponse)
 			console.log(body.length)
-			if(body.length == 2957 || body.length == 161 || body.length == 337){
-				get_proxy()
+			if(body.length == 2957 || body.length == 161 || body.length == 337||body.length<6000){
+				return get_proxy()
 			}else{
 				get_info(body)
 				req_info.params['resultPagination.start'] += req_info.params['resultPagination.limit'];
@@ -55,7 +55,6 @@ function req() {
 }
 
 function get_proxy(){
-	return;
 	// request = request.defaults({'proxy':'http://'+'localhost'})
 
 	request.get(key_info['url'],function(err,res,body){
