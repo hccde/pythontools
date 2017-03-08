@@ -3,18 +3,35 @@ let request = require('request'),
 	fs = require('fs');
 let configure = './req_info.json'
 
-let req_info = require(configure);
+let req_info = require('./req_info.json');
 let key_info = require('./key.json');
 
-let formData = req_info.params
+let formData = {
+		"resultPagination.limit": 12,
+		"resultPagination.sumLimit": 10,
+		"resultPagination.start": 12,
+		"resultPagination.totalCount": 387941,
+		"searchCondition.searchType": "Sino_foreign",
+		"search_scope": "",
+		"searchCondition.dbId": "",
+		"searchCondition.searchExp": "江苏",
+		"wee.bizlog.modulelevel": "0200101",
+		"searchCondition.executableSearchExp": "VDB:(IBI='江苏')",
+		"searchCondition.literatureSF": "",
+		"searchCondition.strategy": "",
+		"searchCondition.searchKeywords":"",
+		"searchCondition.searchKeywords": "[江][ ]{0,}[苏][ ]{0,}",
+	}
+console.log(formData)
 let proxy = undefined
 function req() {
 	request.post({
-			url: req_info.url,
-			formData: formData,
+			url: "http://www.pss-system.gov.cn/sipopublicsearch/patentsearch/showSearchResult-startWa.shtml",
+			form: formData,
 			gzip: true,
-			headers:req_info.headers,
-			proxy:proxy&&('http://'+proxy)
+			// headers:req_info.headers,
+			// proxy:proxy&&('http://'+proxy)
+			// proxy:'http://127.0.0.1:8888'
 		},
 		function optionalCallback(err, httpResponse, body) {
 			if (err) {
@@ -38,6 +55,7 @@ function req() {
 }
 
 function get_proxy(){
+	return;
 	// request = request.defaults({'proxy':'http://'+'localhost'})
 
 	request.get(key_info['url'],function(err,res,body){
