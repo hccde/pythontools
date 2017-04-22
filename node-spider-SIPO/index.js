@@ -31,7 +31,7 @@ function req() {
 			gzip: true,
 			headers:req_info.headers,
 			// proxy:proxy&&('http://'+proxy)
-			proxy:'http://218.66.253.146:8800'
+			proxy:'http://183.4.175.239:9797'
 		},
 		function optionalCallback(err, httpResponse, body) {
 			if (err) {
