@@ -1,11 +1,14 @@
 html,body{
 	width: 100%;
 	height: 100%;
+	margin: 0px;
+	padding: 0px;
 }
 .page-main-title{
 	width: 100%;
-	margin-top: 30%;
 	text-align: center;
+	margin: 0px;
+	padding-top: 30%;
 }
 .page-main-input{
 	width: 100%;
