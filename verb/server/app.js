@@ -11,7 +11,7 @@ let app = express();
 app.use('/',router);
 
 //static
-app.use('/static', express.static(__dirname + '/static'));
+app.use('/static', express.static('../static'));
 
 //log
 let  accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'});
