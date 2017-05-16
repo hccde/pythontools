@@ -18,9 +18,10 @@ let  accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), 
 app.use(morgan('combined',{
 	stream:accessLogStream
 }));
-
+//diable x-powered-by header
+app.disable('x-powered-by');
 
 //start server
 let server = app.listen(3030,()=>{
 	console.log('server start');
-})
+});
