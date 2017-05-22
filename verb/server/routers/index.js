@@ -11,4 +11,5 @@ router.get('/',(req,res,next)=>{
 	next();
 })
 
+//post word interface
 module.exports = router;
