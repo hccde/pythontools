@@ -9,6 +9,9 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "download": "^6.2.5",
+    "express": "^4.16.2",
+    "jquery": "^3.3.1",
     "request": "^2.83.0"
   }
 }
