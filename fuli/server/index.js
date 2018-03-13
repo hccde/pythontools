@@ -19,12 +19,11 @@ getList(1);
 $('#button').click(function(){
     $('#video').attr('src',list[index])
     window.index=window.index+1;
-    if(window.index >= 20){
-        page+=1;
-        getList(page);
+    if(window.index >= list.length){
+        window.index = 1;
     }
 });
 $('#submit').click(function(){
     var  p = $("#input").val();
-    getList(p);
+    window.index = p;
 })
