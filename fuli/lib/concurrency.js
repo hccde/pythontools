@@ -10,7 +10,7 @@ class Concurrency {
         if(this.length < this.capacity){
             await this.container.push(task);
             this.container_promise = Promise.race(this.container).then(() => {
-                
+                // this.container
             });
         }else{
             this.queeu = task;// block push
