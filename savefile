@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<input type="file" name="" id="test">
+<img src="sort.gif">
+<script type="text/javascript" src="gif.js"></script>
+<script type="text/javascript" src="html.js"></script>
+<script type="text/javascript">
+    var handler = {
+      hdr: function(e){console.log(e)},
+      // gce: function(e){console.log(e)},
+      // com: function(e){console.log(e)}, // I guess that's all for now.
+      app: {
+       // TODO: Is there much point in actually supporting iterations?
+        // NETSCAPE:function(e){console.log(e)}
+      },
+      img: function(e){console.log(e)},
+      eof: function(block) {
+        console.log(block,11)
+        //toolbar.style.display = '';
+        // pushFrame();
+        // doDecodeProgress(false);
+        // doText('Playing...');
+        // doPlay();
+      }
+    };
+    document.getElementById('test').addEventListener('change',function(e){
+        let fs = e.target.files[0]
+        let fr = new FileReader();
+        fr.onloadend = function(){
+            parseGIF(new Stream(fr.result),handler);
+        }
+        fr.readAsText(fs,'x-user-defined');
+    })
+</script>
+<script type="text/javascript">
+    // parseGif('')
+</script>
+</body>
+</html>
+
